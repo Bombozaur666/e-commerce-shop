@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: dockerfiles/server.dockerfile
+    volumes:
+      - ./src:/usr/src/app:rw
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - cache
+    env_file:
+      - ./env/server.env
+      - ./env/db.env
+      - ./env/cache.env
+    container_name: django-server
+
+  db:
+    image: postgres:15.1-alpine
+    restart: always
+    env_file:
+      - ./env/db.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    container_name: postgres-database
+
+  cache:
+    image: "redis:alpine"
