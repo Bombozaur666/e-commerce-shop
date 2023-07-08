@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
 ]
 
 
@@ -141,6 +142,13 @@ CACHE_TTL = os.environ['CACHE_TTL']
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://cache",
+        "LOCATION": "redis://redis",
     }
 }
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_WORKER_CONCURRENCY = os.environ['CELERY_WORKER_CONCURRENCY']
+CELERY_TRACK_STARTED = os.environ['CELERY_TRACK_STARTED']
+
+CELERY_RESULT_BACKEND = os.environ['CELERY_RESULT_BACKEND']
+CELERY_CACHE_BACKEND = os.environ['CELERY_CACHE_BACKEND']
