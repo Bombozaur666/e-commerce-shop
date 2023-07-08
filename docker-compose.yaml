@@ -30,7 +30,7 @@ services:
       - ./env/db.env
       - ./env/cache.env
       - ./env/celery.env
-    entrypoint: "/bin/sh -c 'python3 manage.py runserver $${SERVER_IP}:$${PORT}'"
+    command: "/bin/sh -c 'python3 manage.py runserver $${SERVER_IP}:$${PORT}'"
     container_name: django
 
   celery-worker:
