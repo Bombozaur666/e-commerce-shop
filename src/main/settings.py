@@ -14,7 +14,11 @@ from pathlib import Path
 import os
 from time import sleep
 
-sleep(3)
+# If it's a first run of the app wait 30 seconds to properly initialize database
+if os.environ['FIRST_USE'] == 'True':
+    sleep(30)
+else:
+    sleep(4)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
