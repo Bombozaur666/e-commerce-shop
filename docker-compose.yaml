@@ -7,11 +7,11 @@ services:
       - ./env/db.env
     volumes:
       - ./db:/var/lib/postgresql/data
-    container_name: postgres
+    container_name: e-commerce-postgres
 
   redis:
     image: "redis:alpine"
-    container_name: redis
+    container_name: e-commerce-redis
 
   django:
     restart: unless-stopped
@@ -31,7 +31,7 @@ services:
       - ./env/cache.env
       - ./env/celery.env
     command: "/bin/sh -c 'python3 manage.py runserver $${SERVER_IP}:$${PORT}'"
-    container_name: django
+    container_name: e-commerce-django
 
   celery-worker:
     restart: unless-stopped
@@ -48,7 +48,7 @@ services:
       - ./env/db.env
       - ./env/cache.env
       - ./env/celery.env
-    container_name: celery-worker
+    container_name: e-commerce-celery-worker
 
   celery-beat:
     restart: unless-stopped
@@ -65,4 +65,4 @@ services:
       - ./env/db.env
       - ./env/cache.env
       - ./env/celery.env
-    container_name: celery-beat
+    container_name: e-commerce-celery-beat
