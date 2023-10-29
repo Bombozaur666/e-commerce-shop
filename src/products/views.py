@@ -2,7 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from .serializers import ProductSerializer
-from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView, \
+    get_object_or_404
 from django_filters import rest_framework as filters
 
 from .models import Product
@@ -42,3 +43,20 @@ class ProductView(RetrieveAPIView):
         product = get_object_or_404(Product, pk=pk)
         product_serializer = ProductSerializer(product)
         return Response(product_serializer.data, status=status.HTTP_200_OK)
+
+
+class AddProductView(CreateAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+
+class DeleteProductView(DestroyAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    lookup_field = 'pk'
+
+
+class ModifyProductView(UpdateAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    lookup_field = 'pk'
