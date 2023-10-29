@@ -1,5 +1,8 @@
+from rest_framework import status
+from rest_framework.response import Response
+
 from .serializers import ProductSerializer
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from django_filters import rest_framework as filters
 
 from .models import Product
@@ -13,7 +16,7 @@ class ProductFilter(filters.FilterSet):
         fields = {'name': ['exact'],
                   'description': ['exact'],
                   'price': ['lte', 'gte', 'exact']
-            }
+                  }
 
 
 class ListProductsView(ListAPIView):
@@ -32,3 +35,10 @@ class ListProductsView(ListAPIView):
         if ordering in self.ordering_categories:
             queryset = queryset.order_by(ordering)
         return queryset
+
+
+class ProductView(RetrieveAPIView):
+    def retrieve(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        product_serializer = ProductSerializer(product)
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
