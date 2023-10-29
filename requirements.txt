@@ -16,3 +16,4 @@ django-celery-beat==2.5.0
 pytest-django
 httpx==0.24.1
 Pillow==10.1.0
+django-filter==22.1

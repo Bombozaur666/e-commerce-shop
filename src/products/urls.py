@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ListProductsView, ProductView, AddProductView, DeleteProductView, ModifyProductView
 
-app_name = 'orders'
+app_name = 'products'
 
 urlpatterns = [
     path('list/', ListProductsView.as_view(), name='list-products'),
