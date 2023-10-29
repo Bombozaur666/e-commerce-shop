@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import ProductSerializer
@@ -48,6 +49,16 @@ class ProductView(RetrieveAPIView):
 class AddProductView(CreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def check_permissions(self, request):
+        for permission in self.get_permissions():
+            if not permission.has_permission(request, self):
+                self.permission_denied(request)
+
+        user_groups = list(self.request.user.groups.values_list('name', flat=True))
+        if 'seller' not in user_groups:
+            self.permission_denied(request)
 
 
 class DeleteProductView(DestroyAPIView):
@@ -55,8 +66,30 @@ class DeleteProductView(DestroyAPIView):
     queryset = Product.objects.all()
     lookup_field = 'pk'
 
+    permission_classes = [IsAuthenticated]
+
+    def check_permissions(self, request):
+        for permission in self.get_permissions():
+            if not permission.has_permission(request, self):
+                self.permission_denied(request)
+
+        user_groups = list(self.request.user.groups.values_list('name', flat=True))
+        if 'seller' not in user_groups:
+            self.permission_denied(request)
+
 
 class ModifyProductView(UpdateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'pk'
+
+    permission_classes = [IsAuthenticated]
+
+    def check_permissions(self, request):
+        for permission in self.get_permissions():
+            if not permission.has_permission(request, self):
+                self.permission_denied(request)
+
+        user_groups = list(self.request.user.groups.values_list('name', flat=True))
+        if 'seller' not in user_groups:
+            self.permission_denied(request)
