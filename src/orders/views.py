@@ -85,5 +85,3 @@ class OrderStatisticView(ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = list(self.filter_queryset(self.get_queryset()))
         return Response(queryset, status=status.HTTP_200_OK)
-
-
