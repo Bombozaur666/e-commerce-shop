@@ -22,8 +22,8 @@ class Product(models.Model):
         on_delete=models.SET_NULL
     )
 
-    image_full = models.ImageField(upload_to='images')
-    image_thumbnail = models.ImageField(upload_to='thumbnail', blank=True)
+    image_full = models.ImageField(upload_to='media/images')
+    image_thumbnail = models.ImageField(upload_to='media/thumbnail', blank=True)
 
     def __str__(self):
         return str(self.name)
