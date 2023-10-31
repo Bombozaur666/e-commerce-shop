@@ -36,8 +36,15 @@ class CreateOrderView(CreateAPIView):
         for _order in order_list:
             product = get_object_or_404(Product, pk=_order["product"])
             quantity = int(_order["quantity"])
-            bulk.append(OrderItem(order=order, product=product, quantity=quantity, price=product.price))
+            order_item = OrderItem(order=order, product=product, quantity=quantity, price=product.price)
+            try:
+                order_item.full_clean()
+            except ValidationError:
+                order.delete()
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            bulk.append(order_item)
             receivable += quantity * product.price
+
         OrderItem.objects.bulk_create(bulk)
         return Response(
             data={"receivable": receivable, "date of payment": order.date_of_payment},
