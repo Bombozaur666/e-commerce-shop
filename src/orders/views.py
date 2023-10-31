@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import StatisticSerializer
 from rest_framework.generics import CreateAPIView, ListAPIView
 from .models import Order, OrderItem
 import json
+from shared.utils import Roles
 from django_filters import rest_framework as filters
 from django.db.models import Sum
 from products.models import Product
@@ -20,7 +20,7 @@ class CreateOrderView(CreateAPIView):
                 self.permission_denied(request)
 
         user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if 'client' not in user_groups:
+        if Roles.CLIENT not in user_groups:
             self.permission_denied(request)
 
     def create(self, request):

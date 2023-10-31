@@ -6,7 +6,7 @@ from .serializers import ProductSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView, \
     get_object_or_404
 from django_filters import rest_framework as filters
-
+from shared.utils import Roles
 from .models import Product
 
 
@@ -56,8 +56,7 @@ class AddProductView(CreateAPIView):
             if not permission.has_permission(request, self):
                 self.permission_denied(request)
 
-        user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if 'seller' not in user_groups:
+        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
             self.permission_denied(request)
 
 
@@ -73,8 +72,7 @@ class DeleteProductView(DestroyAPIView):
             if not permission.has_permission(request, self):
                 self.permission_denied(request)
 
-        user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if 'seller' not in user_groups:
+        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
             self.permission_denied(request)
 
 
@@ -82,7 +80,6 @@ class ModifyProductView(UpdateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'pk'
-
     permission_classes = [IsAuthenticated]
 
     def check_permissions(self, request):
@@ -90,6 +87,5 @@ class ModifyProductView(UpdateAPIView):
             if not permission.has_permission(request, self):
                 self.permission_denied(request)
 
-        user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if 'seller' not in user_groups:
+        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
             self.permission_denied(request)
