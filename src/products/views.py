@@ -6,7 +6,7 @@ from .serializers import ProductSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView, \
     get_object_or_404
 from django_filters import rest_framework as filters
-from shared.utils import Roles
+from shared.permissions import IsClient, IsSeller
 from .models import Product
 
 
@@ -49,15 +49,8 @@ class ProductView(RetrieveAPIView):
 class AddProductView(CreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSeller]
 
-    def check_permissions(self, request):
-        for permission in self.get_permissions():
-            if not permission.has_permission(request, self):
-                self.permission_denied(request)
-
-        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
-            self.permission_denied(request)
 
 
 class DeleteProductView(DestroyAPIView):
@@ -65,27 +58,12 @@ class DeleteProductView(DestroyAPIView):
     queryset = Product.objects.all()
     lookup_field = 'pk'
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSeller]
 
-    def check_permissions(self, request):
-        for permission in self.get_permissions():
-            if not permission.has_permission(request, self):
-                self.permission_denied(request)
-
-        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
-            self.permission_denied(request)
 
 
 class ModifyProductView(UpdateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'pk'
-    permission_classes = [IsAuthenticated]
-
-    def check_permissions(self, request):
-        for permission in self.get_permissions():
-            if not permission.has_permission(request, self):
-                self.permission_denied(request)
-
-        if not self.request.user.groups.filter(name=Roles.SELLER).exists():
-            self.permission_denied(request)
+    permission_classes = [IsAuthenticated, IsSeller]
