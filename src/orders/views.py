@@ -16,7 +16,7 @@ class CreateOrderView(CreateAPIView):
 
     def create(self, request):
         from django.core.mail import EmailMessage
-        import os
+        from django.conf import settings
         from json import loads
 
         order = Order(
@@ -51,7 +51,7 @@ class CreateOrderView(CreateAPIView):
 
         subject = f"Your Order: {order.pk} has been registered."
         message = f"Total sum of your order: {receivable}."
-        from_email = os.environ["EMAIL_HOST_USER"]
+        from_email = (settings.EMAIL_HOST_USER,)
         email = EmailMessage(
             subject=subject,
             body=message,
