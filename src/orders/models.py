@@ -6,9 +6,7 @@ from products.models import Product
 
 # Create your models here.
 class Order(models.Model):
-    client = models.ForeignKey(
-        User,
-        on_delete=models.DO_NOTHING)
+    client = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=6)
@@ -29,14 +27,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(
-        Order,
-        related_name="items",
-        on_delete=models.CASCADE)
-    product = models.ForeignKey(
-        Product,
-        related_name="order_items",
-        on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name="order_items", on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     quantity = models.PositiveIntegerField(default=1)
 

@@ -1,5 +1,10 @@
 from django.contrib.auth.models import User
-from rest_framework.serializers import ModelSerializer, Serializer, CharField, IntegerField
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    CharField,
+    IntegerField,
+)
 from .models import Order, OrderItem
 from products.serializers import ProductSerializer
 
@@ -12,7 +17,7 @@ class StatisticSerializer(Serializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ["first_name", "last_name", "email"]
 
 
 class OrderSerializer(ModelSerializer):
@@ -20,7 +25,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['client', 'address', 'city', 'postal_code', 'created', 'payment']
+        fields = ["client", "address", "city", "postal_code", "created", "payment"]
 
 
 class OrderItemSerializer(ModelSerializer):
@@ -29,4 +34,4 @@ class OrderItemSerializer(ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'price', 'quantity']
+        fields = ["order", "product", "price", "quantity"]

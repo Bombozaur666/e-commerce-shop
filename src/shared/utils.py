@@ -1,3 +1,3 @@
 class Roles:
-    CLIENT = 'client'
-    SELLER = 'seller'
+    CLIENT = "client"
+    SELLER = "seller"
