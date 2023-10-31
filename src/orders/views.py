@@ -15,6 +15,8 @@ class CreateOrderView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsClient]
 
     def create(self, request):
+        from django.core.mail import EmailMessage
+        import os
         from json import loads
 
         order = Order(
@@ -46,6 +48,18 @@ class CreateOrderView(CreateAPIView):
             receivable += quantity * product.price
 
         OrderItem.objects.bulk_create(bulk)
+
+        subject = f"Your Order: {order.pk} has been registered."
+        message = f"Total sum of your order: {receivable}."
+        from_email = os.environ["EMAIL_HOST_USER"]
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[order.client.email],
+        )
+        email.send()
+
         return Response(
             data={"receivable": receivable, "date of payment": order.date_of_payment},
             status=status.HTTP_201_CREATED,
