@@ -8,6 +8,7 @@ class StatisticSerializer(Serializer):
     product__name = CharField()
     quantity = IntegerField()
 
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User

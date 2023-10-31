@@ -4,26 +4,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, ListAPIView
 from .models import Order, OrderItem
-import json
-from shared.utils import Roles
 from django_filters import rest_framework as filters
 from django.db.models import Sum
 from products.models import Product
+from shared.permissions import IsClient, IsSeller
 
 
 class CreateOrderView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def check_permissions(self, request):
-        for permission in self.get_permissions():
-            if not permission.has_permission(request, self):
-                self.permission_denied(request)
-
-        user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if Roles.CLIENT not in user_groups:
-            self.permission_denied(request)
+    permission_classes = [IsAuthenticated, IsClient]
 
     def create(self, request):
+        from json import loads
         order = Order(client=request.user,
                       address=request.data['address'],
                       city=request.data['city'],
@@ -32,7 +23,7 @@ class CreateOrderView(CreateAPIView):
         order.full_clean()
         order.save()
 
-        order_list = json.loads(request.data['order'])
+        order_list = loads(request.data['order'])
         bulk = []
         receivable = 0
         for _order in order_list:
@@ -60,16 +51,7 @@ class OrderFilter(filters.FilterSet):
 
 
 class OrderStatisticView(ListAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def check_permissions(self, request):
-        for permission in self.get_permissions():
-            if not permission.has_permission(request, self):
-                self.permission_denied(request)
-
-        user_groups = list(self.request.user.groups.values_list('name', flat=True))
-        if 'seller' not in user_groups:
-            self.permission_denied(request)
+    permission_classes = [IsAuthenticated, IsSeller]
 
     def get_queryset(self):
         start_date = self.request.query_params.get('date_start')
