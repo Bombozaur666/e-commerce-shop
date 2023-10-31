@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -22,8 +23,11 @@ class CreateOrderView(CreateAPIView):
             city=request.data["city"],
             postal_code=request.data["postal_code"],
         )
+        try:
+            order.full_clean()
+        except ValidationError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        order.full_clean()
         order.save()
 
         order_list = loads(request.data["order"])
