@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
+from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -23,16 +26,36 @@ class CreateUserView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         user = User(
             username=request.POST.get("username"),
+            first_name=request.POST.get("first_name"),
+            last_name=request.POST.get("last_name"),
             email=request.POST.get("email"),
         )
         user.set_password(request.POST.get("password"))
+
         try:
             user.full_clean()
         except ValidationError:
             return Response({"error": "Your data is incorrect."}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         group = Group.objects.get(name=Roles.CLIENT)
-        user.save()
+        try:
+            user.save()
+        except IntegrityError:
+            return Response({"error": "You must fulfill all fields."}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         user.groups.add(group)
+
+        subject = "Account Created"
+        message = f"Your account '{user.username}' has beem created. Welcome {user.get_full_name()}"
+        from_email = settings.EMAIL_HOST_USER
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[user.email],
+        )
+        email.send()
+
         serializer = CreateClientUserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
