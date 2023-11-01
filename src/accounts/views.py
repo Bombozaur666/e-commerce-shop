@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
@@ -17,11 +18,15 @@ class CreateUserView(CreateAPIView):
     serializer_class = CreateClientUserSerializer
 
     def create(self, request, *args, **kwargs):
-        user = User.objects.create_user(
-            username=request.data["username"],
-            email=request.data["email"],
-            password=request.data["password"],
+        user = User(
+            username=request.POST.get("username"),
+            email=request.POST.get("email"),
+            password=request.POST.get("password"),
         )
+        try:
+            user.full_clean()
+        except ValidationError:
+            return Response({"error": "Your data is incorrect."}, status=status.HTTP_406_NOT_ACCEPTABLE)
         group = Group.objects.get(name=Roles.CLIENT)
         user.save()
         user.groups.add(group)
