@@ -1,8 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from .models import Category
 from .serializers import CategorySerializer
 from shared.permissions import IsSeller

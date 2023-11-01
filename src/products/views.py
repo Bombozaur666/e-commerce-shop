@@ -1,16 +1,6 @@
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
 from .serializers import ProductSerializer
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView,
-    get_object_or_404,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters import rest_framework as filters
 from shared.permissions import IsSeller
 from .models import Product
