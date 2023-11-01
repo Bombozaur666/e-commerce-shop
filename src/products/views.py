@@ -63,7 +63,6 @@ class DeleteProductView(DestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     lookup_field = "pk"
-
     permission_classes = [IsAuthenticated, IsSeller]
 
 
