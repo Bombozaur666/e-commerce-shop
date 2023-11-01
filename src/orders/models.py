@@ -11,7 +11,6 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=6)
     created = models.DateField(blank=True)
-
     date_of_payment = models.DateField(blank=True)
 
     class Meta:
