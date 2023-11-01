@@ -1,4 +1,6 @@
 from io import BytesIO
+
+from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
 from django.core.files.base import ContentFile
@@ -27,3 +29,8 @@ class Product(models.Model):
         val = buffer.getvalue()
         self.image_thumbnail.save(self.image_full.name, ContentFile(val), save=False)
         super().save(*args, **kwargs)
+
+
+class WishList(models.Model):
+    client = models.ForeignKey(User, related_name="wishlist", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name="wishlist", on_delete=models.CASCADE)

@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Product
+from .models import Product, WishList
 from categories.serializers import CategorySerializer
 
 
@@ -17,3 +17,11 @@ class ProductSerializer(ModelSerializer):
             "image_full",
             "image_thumbnail",
         ]
+
+
+class WishListSerializer(ModelSerializer):
+    product = ProductSerializer
+
+    class Meta:
+        model = WishList
+        fields = ["product"]
