@@ -48,10 +48,9 @@ class ListProductsView(ListAPIView):
 
 
 class ProductView(RetrieveAPIView):
-    def retrieve(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        product_serializer = ProductSerializer(product)
-        return Response(product_serializer.data, status=status.HTTP_200_OK)
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    lookup_field = "pk"
 
 
 class AddProductView(CreateAPIView):
