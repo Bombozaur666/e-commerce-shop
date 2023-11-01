@@ -17,7 +17,7 @@ class CategoryView(RetrieveAPIView):
     lookup_field = "pk"
 
 
-class AddCreateView(CreateAPIView):
+class AddCategoryView(CreateAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     permission_classes = [IsAuthenticated, IsSeller]
