@@ -2,15 +2,9 @@ from io import BytesIO
 from django.db import models
 from PIL import Image
 from django.core.files.base import ContentFile
+from categories.models import Category
 
 # Create your models here.
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return str(self.name)
 
 
 class Product(models.Model):
