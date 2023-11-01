@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework.serializers import (
     ModelSerializer,
     Serializer,
@@ -7,17 +6,12 @@ from rest_framework.serializers import (
 )
 from .models import Order, OrderItem
 from products.serializers import ProductSerializer
+from accounts.serializers import UserSerializer
 
 
 class StatisticSerializer(Serializer):
     product__name = CharField()
     quantity = IntegerField()
-
-
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["first_name", "last_name", "email"]
 
 
 class OrderSerializer(ModelSerializer):
