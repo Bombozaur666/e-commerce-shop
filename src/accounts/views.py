@@ -1,3 +1,5 @@
+from smtplib import SMTPException
+
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
@@ -64,8 +66,10 @@ class CreateUserView(CreateAPIView):
             from_email=from_email,
             to=[user.email],
         )
-        email.send()
-
+        try:
+            email.send()
+        except SMTPException:
+            pass
         serializer = CreateClientUserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

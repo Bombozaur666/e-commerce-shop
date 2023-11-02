@@ -1,4 +1,5 @@
 import datetime
+from smtplib import SMTPException
 
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
@@ -60,8 +61,10 @@ class CreateOrderView(CreateAPIView):
             from_email=from_email,
             to=[order.client.email],
         )
-        email.send()
-
+        try:
+            email.send()
+        except SMTPException:
+            pass
         return Response(
             data={"receivable": receivable, "date of payment": order.date_of_payment},
             status=status.HTTP_201_CREATED,
