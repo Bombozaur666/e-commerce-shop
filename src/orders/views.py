@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -80,9 +82,19 @@ class OrderStatisticView(ListAPIView):
     permission_classes = [IsAuthenticated, IsSeller]
 
     def get_queryset(self):
-        start_date = self.request.query_params.get("date_start")
-        end_date = self.request.query_params.get("date_end")
-        limit = int(self.request.query_params.get("limit"))
+        if self.request.query_params.get("date_start"):
+            start_date = self.request.query_params.get("date_start")
+        else:
+            start_date = datetime.datetime(year=2010, month=1, day=1)
+        if self.request.query_params.get("date_end"):
+            end_date = self.request.query_params.get("date_end")
+        else:
+            end_date = datetime.datetime.now()
+        if self.request.query_params.get("limit"):
+            limit = int(self.request.query_params.get("limit"))
+        else:
+            limit = None
+
         queryset = (
             OrderItem.objects.filter(order__created__range=(start_date, end_date))
             .values("product__name")
