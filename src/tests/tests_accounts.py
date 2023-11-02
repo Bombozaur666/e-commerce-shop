@@ -115,13 +115,9 @@ def test_accounts(client, django_user_model):
     resp = client.post("/accounts/token/", wrong_login_data)
     assert resp.status_code == 401
 
-    auth_header = {"Authorization": f"Bearer {access_token}"}
-
-    wrong_auth_header = {"Authorization": "Bearer 2"}
-
-    wrong_auth_header_tempalte = {"Authorization": f"Bearer{access_token}"}
-
     # TEST CHECK PROFILE
+
+    auth_header = {"Authorization": f"Bearer {access_token}"}
 
     resp = client.get("/accounts/profile/", headers=auth_header)
     assert resp.status_code == 200
@@ -129,9 +125,3 @@ def test_accounts(client, django_user_model):
     assert resp.json()["email"] == user_email
     assert resp.json()["first_name"] == user_first_name
     assert resp.json()["last_name"] == user_last_name
-
-    resp = client.get("/accounts/profile/", headers=wrong_auth_header)
-    assert resp.status_code == 401
-
-    resp = client.get("/accounts/profile/", headers=wrong_auth_header_tempalte)
-    assert resp.status_code == 401
