@@ -13,8 +13,8 @@ class ProductFilter(filters.FilterSet):
     class Meta:
         model = Product
         fields = {
-            "name": ["exact"],
-            "description": ["exact"],
+            "name": ["exact", "contains"],
+            "description": ["exact", "contains"],
             "price": ["lte", "gte", "exact"],
         }
 
