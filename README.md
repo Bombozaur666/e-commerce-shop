@@ -236,7 +236,7 @@ Response:
 The most configurable API
 ### Create User
 
-All users created by api will belong to `Client` group
+All users created by api will belong to `Client` group. To create user with `Seller` group you need to make them manually with superuser account.
 
 ```http
   POST /orders/create/
