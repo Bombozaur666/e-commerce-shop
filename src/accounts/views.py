@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
-from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -24,6 +23,20 @@ class CreateUserView(CreateAPIView):
     serializer_class = CreateClientUserSerializer
 
     def create(self, request, *args, **kwargs):
+        if not (
+            request.POST.get("username")
+            and request.POST.get("password")
+            and request.POST.get("first_name")
+            and request.POST.get("last_name")
+            and request.POST.get("email")
+        ):
+            return Response({"error": "Your data is incorrect."}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        if User.objects.filter(username=request.POST.get("username")):
+            return Response(
+                {"error": "There is already user with this username."}, status=status.HTTP_406_NOT_ACCEPTABLE
+            )
+
         user = User(
             username=request.POST.get("username"),
             first_name=request.POST.get("first_name"),
@@ -38,10 +51,7 @@ class CreateUserView(CreateAPIView):
             return Response({"error": "Your data is incorrect."}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         group = Group.objects.get(name=Roles.CLIENT)
-        try:
-            user.save()
-        except IntegrityError:
-            return Response({"error": "You must fulfill all fields."}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        user.save()
 
         user.groups.add(group)
 
